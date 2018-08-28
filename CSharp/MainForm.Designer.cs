@@ -152,6 +152,7 @@ namespace TwainFileTransferDemo
             this.statusTextBox.Location = new System.Drawing.Point(12, 185);
             this.statusTextBox.Multiline = true;
             this.statusTextBox.Name = "statusTextBox";
+            this.statusTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.statusTextBox.Size = new System.Drawing.Size(725, 425);
             this.statusTextBox.TabIndex = 117;
             // 
@@ -180,6 +181,7 @@ namespace TwainFileTransferDemo
             this.Controls.Add(this.acquireImageWithUIButton);
             this.MaximizeBox = false;
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "VintaSoft TWAIN File Transfer Demo";
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);

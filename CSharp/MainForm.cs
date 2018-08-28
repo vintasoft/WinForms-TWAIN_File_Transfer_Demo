@@ -105,23 +105,48 @@ namespace TwainFileTransferDemo
         {
             SetFormUiState(false);
 
-            // try to find the device manager 2.x
-            _deviceManager.IsTwain2Compatible = true;
-            // if TWAIN device manager 2.x is NOT available
-            if (!_deviceManager.IsTwainAvailable)
+            try
             {
-                // try to find the device manager 1.x
+                // try to find the device manager 2.x
                 _deviceManager.IsTwain2Compatible = true;
-                // if TWAIN device manager 1.x is NOT available
+                // if TWAIN device manager 2.x is NOT available
                 if (!_deviceManager.IsTwainAvailable)
                 {
-                    MessageBox.Show("TWAIN device manager is not found.");
-                    return false;
+                    // try to find the device manager 1.x
+                    _deviceManager.IsTwain2Compatible = true;
+                    // if TWAIN device manager 1.x is NOT available
+                    if (!_deviceManager.IsTwainAvailable)
+                    {
+                        MessageBox.Show("TWAIN device manager is not found.");
+                        return false;
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                // show dialog with error message
+                MessageBox.Show(ex.Message, "TWAIN device manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
 
-            // open the device manager
-            _deviceManager.Open();
+            // if 64-bit TWAIN2 device manager is used
+            if (IntPtr.Size == 8 && _deviceManager.IsTwain2Compatible)
+            {
+                if (!InitTwain2DeviceManagerMode())
+                    return false;
+            }
+
+            try
+            {
+                // open the device manager
+                _deviceManager.Open();
+            }
+            catch (Exception ex)
+            {
+                // show dialog with error message
+                MessageBox.Show(ex.Message, "TWAIN device manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
 
             // if no devices are found in the system
             if (_deviceManager.Devices.Count == 0)
@@ -134,6 +159,50 @@ namespace TwainFileTransferDemo
             return true;
         }
 
+        /// <summary>
+        /// Initializes the device manager mode.
+        /// </summary>
+        private bool InitTwain2DeviceManagerMode()
+        {
+            // create a form that allows to view and edit mode of 64-bit TWAIN2 device manager
+            using (SelectDeviceManagerModeForm form = new SelectDeviceManagerModeForm())
+            {
+                // initialize form
+                form.StartPosition = FormStartPosition.CenterParent;
+                form.Owner = this;
+                form.Use32BitDevices = _deviceManager.Are32BitDevicesUsed;
+
+                // show dialog
+                if (form.ShowDialog() == DialogResult.OK)
+                {
+                    // if device manager mode is changed
+                    if (form.Use32BitDevices != _deviceManager.Are32BitDevicesUsed)
+                    {
+                        try
+                        {
+                            // if 32-bit devices must be used
+                            if (form.Use32BitDevices)
+                                _deviceManager.Use32BitDevices();
+                            else
+                                _deviceManager.Use64BitDevices();
+                        }
+                        catch (TwainDeviceManagerException ex)
+                        {
+                            // show dialog with error message
+                            MessageBox.Show(ex.Message, "TWAIN device manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                            return false;
+                        }
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         /// <summary>
         /// Selects directory for acquired images.
@@ -401,10 +470,16 @@ namespace TwainFileTransferDemo
                 _currentDevice = null;
             }
 
-            // close the device manager
-            _deviceManager.Close();
-            // dispose the device manager
-            _deviceManager.Dispose();
+            try
+            {
+                // close the device manager
+                _deviceManager.Close();
+                // dispose the device manager
+                _deviceManager.Dispose();
+            }
+            catch
+            {
+            }
         }
 
         #endregion
