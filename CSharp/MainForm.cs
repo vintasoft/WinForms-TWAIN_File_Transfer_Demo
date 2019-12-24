@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Windows.Forms;
 using Vintasoft.Twain;
@@ -42,7 +42,7 @@ namespace TwainFileTransferDemo
             this.Text = string.Format("VintaSoft TWAIN File Transfer Demo v{0}", TwainGlobalSettings.ProductVersion);
 
             // create instance of the DeviceManager class
-            _deviceManager = new DeviceManager(this);
+            _deviceManager = new DeviceManager(this, this.Handle);
         }
 
         #endregion
@@ -113,7 +113,7 @@ namespace TwainFileTransferDemo
                 if (!_deviceManager.IsTwainAvailable)
                 {
                     // try to find the device manager 1.x
-                    _deviceManager.IsTwain2Compatible = true;
+                    _deviceManager.IsTwain2Compatible = false;
                     // if TWAIN device manager 1.x is NOT available
                     if (!_deviceManager.IsTwainAvailable)
                     {
@@ -125,7 +125,7 @@ namespace TwainFileTransferDemo
             catch (Exception ex)
             {
                 // show dialog with error message
-                MessageBox.Show(ex.Message, "TWAIN device manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(GetFullExceptionMessage(ex), "TWAIN device manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
@@ -144,7 +144,7 @@ namespace TwainFileTransferDemo
             catch (Exception ex)
             {
                 // show dialog with error message
-                MessageBox.Show(ex.Message, "TWAIN device manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(GetFullExceptionMessage(ex), "TWAIN device manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
@@ -189,7 +189,7 @@ namespace TwainFileTransferDemo
                         catch (TwainDeviceManagerException ex)
                         {
                             // show dialog with error message
-                            MessageBox.Show(ex.Message, "TWAIN device manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(GetFullExceptionMessage(ex), "TWAIN device manager", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                             return false;
                         }
@@ -274,7 +274,7 @@ namespace TwainFileTransferDemo
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(GetFullExceptionMessage(ex));
             }
             finally
             {
@@ -352,7 +352,7 @@ namespace TwainFileTransferDemo
             {
                 // close the device
                 _currentDevice.Close();
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(GetFullExceptionMessage(ex));
                 SetFormUiState(true);
                 return;
             }
@@ -480,6 +480,25 @@ namespace TwainFileTransferDemo
             catch
             {
             }
+        }
+
+        /// <summary>
+        /// Returns the message of exception and inner exceptions.
+        /// </summary>
+        private string GetFullExceptionMessage(Exception ex)
+        {
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            sb.AppendLine(ex.Message);
+
+            Exception innerException = ex.InnerException;
+            while (innerException != null)
+            {
+                if (ex.Message != innerException.Message)
+                    sb.AppendLine(string.Format("Inner exception: {0}", innerException.Message));
+                innerException = innerException.InnerException;
+            }
+
+            return sb.ToString();
         }
 
         #endregion

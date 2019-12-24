@@ -1,4 +1,4 @@
-namespace TwainFileTransferDemo
+﻿namespace TwainFileTransferDemo
 {
     partial class MainForm
     {
