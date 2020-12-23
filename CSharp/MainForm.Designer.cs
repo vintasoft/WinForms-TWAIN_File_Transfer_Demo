@@ -168,7 +168,6 @@
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(748, 622);
             this.Controls.Add(this.acquireImageWithoutUIButton);
             this.Controls.Add(this.statusTextBox);
@@ -180,6 +179,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.acquireImageWithUIButton);
             this.MaximizeBox = false;
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "VintaSoft TWAIN File Transfer Demo";
