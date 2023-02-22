@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-using Vintasoft.Twain;
+using Vintasoft.WinTwain;
 
 namespace TwainFileTransferDemo
 {
