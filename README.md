@@ -4,7 +4,7 @@ This WinForms project uses <a href="https://www.vintasoft.com/vstwain-dotnet-ind
 
 
 ## Screenshot
-<img src="vintasoft-twain-file-transfer-demo.png" alt="VintaSoft TWAIN File Transfer Demo">
+<img src="vintasoft-twain-file-transfer-demo.png" title="VintaSoft TWAIN File Transfer Demo">
 
 
 ## Usage
