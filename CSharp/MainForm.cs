@@ -110,8 +110,16 @@ namespace TwainFileTransferDemo
 
             try
             {
+                // get path to the TWAIN device manager 2.x from installation of VintaSoft TWAIN .NET SDK
+                string twainDsmDllCustomPath = GetTwainDsmCustomPath(IntPtr.Size == 4);
+                // if file exist
+                if (twainDsmDllCustomPath != null)
+                    // specify that SDK should use TWAIN device manager 2.x from installation of VintaSoft TWAIN .NET SDK
+                    _deviceManager.TwainDllPath = twainDsmDllCustomPath;
+
                 // try to find the device manager 2.x
                 _deviceManager.IsTwain2Compatible = true;
+
                 // if TWAIN device manager 2.x is NOT available
                 if (!_deviceManager.IsTwainAvailable)
                 {
@@ -178,6 +186,13 @@ namespace TwainFileTransferDemo
                 // show dialog
                 if (form.ShowDialog() == DialogResult.OK)
                 {
+                    // get path to the TWAIN device manager 2.x from installation of VintaSoft TWAIN .NET SDK
+                    string twainDsmDllCustomPath = GetTwainDsmCustomPath(form.Use32BitDevices);
+                    // if file exist
+                    if (twainDsmDllCustomPath != null)
+                        // specify that SDK should use TWAIN device manager 2.x from installation of VintaSoft TWAIN .NET SDK
+                        _deviceManager.TwainDllPath = twainDsmDllCustomPath;
+
                     // if device manager mode is changed
                     if (form.Use32BitDevices != _deviceManager.Are32BitDevicesUsed)
                     {
@@ -502,6 +517,41 @@ namespace TwainFileTransferDemo
             }
 
             return sb.ToString();
+        }
+
+        /// <summary>
+        /// Returns path to the TWAIN device manager 2.x from installation of VintaSoft TWAIN .NET SDK.
+        /// </summary>
+        /// <param name="use32BitDevice">The value indicating whether the 32-bit TWAIN device must be used.</param>
+        /// <returns>The path to the TWAIN device manager 2.x from installation of VintaSoft TWAIN .NET SDK.</returns>
+        private string GetTwainDsmCustomPath(bool use32BitDevice)
+        {
+            string twainFolderName = "TWAINDSM64";
+            if (use32BitDevice)
+                twainFolderName = "TWAINDSM32";
+
+            string[] binFolderPaths = { @"..\..\Bin", @"..\..\..\..\..\Bin", @"..\..\..\..\..\..\Bin" };
+            string binFolderPath = null;
+            for (int i = 0; i < binFolderPaths.Length; i++)
+            {
+                if (Directory.Exists(Path.Combine(binFolderPaths[i], twainFolderName)))
+                {
+                    binFolderPath = binFolderPaths[i];
+                    break;
+                }
+            }
+
+            if (binFolderPath != null)
+            {
+                if (use32BitDevice)
+                    // get path to the TWAIN device manager 2.x (32-bit) from installation of VintaSoft TWAIN .NET SDK
+                    return Path.Combine(binFolderPath, "TWAINDSM32", "TWAINDSM.DLL");
+                else
+                    // get path to the TWAIN device manager 2.x (64-bit) from installation of VintaSoft TWAIN .NET SDK
+                    return Path.Combine(binFolderPath, "TWAINDSM64", "TWAINDSM.DLL");
+            }
+
+            return null;
         }
 
         #endregion
