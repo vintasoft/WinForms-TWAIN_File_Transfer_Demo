@@ -1,6 +1,6 @@
 # VintaSoft WinForms TWAIN File Transfer Demo
 
-This WinForms project uses <a href="https://www.vintasoft.com/vstwain-dotnet-index.html">VintaSoft TWAIN .NET SDK</a> and demonstrates how to acquire images from TWAIN scanner and save scanned images directly to disk.
+This WinForms project uses <a href="https://www.vintasoft.com/vstwain-dotnet-index.html">VintaSoft TWAIN .NET SDK</a> and demonstrates how to acquire images from TWAIN image scanner and save scanned images directly to disk.
 
 
 ## Screenshot
